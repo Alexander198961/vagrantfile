@@ -54,15 +54,26 @@ end
 end
 
 
+
  config.vm.define "nodejs"  do |node1|
   node1.vm.box = "bento/ubuntu-16.04"
   node1.vm.provision "shell", inline: <<-SHELL
     sudo apt-get update
     sudo apt-get -y install nodejs
     sudo nodejs /vagrant/main.js
- # sudo nodejs main.js for nodejs -server
   SHELL
 end
+
+config.vm.define "apache"  do |apache|
+  apache.vm.box = "bento/ubuntu-16.04"
+  apache.vm.provision "shell", inline: <<-SHELL
+    sudo apt-get update
+    sudo apt-get -y install apache2   
+    
+  SHELL
+end
+
+
 
 
 
