@@ -5,6 +5,26 @@
 # configures the configuration version (we support older styles for
 # backwards compatibility). Please don't change it unless you know what
 # you're doing.
+$mysql_glassfish_script=<<SCRIPT
+    sudo apt-get update
+    echo "192.168.50.6    openam.example.com" | sudo tee -a /etc/hosts
+    export JAVA_HOME=/vagrant/jdk1.8.0_121
+    sudo cp -r /vagrant/glassfish4 /opt/
+    export PATH=$PATH:$JAVA_HOME/bin
+    export GLASSFISH_HOME=/opt/glassfish4
+    export PATH=$PATH:$GLASSFISH_HOME/bin
+    echo "export JAVA_HOME=/vagrant/jdk1.8.0_121" | sudo tee -a /root/.bashrc
+    sudo echo "export PATH=$PATH:$JAVA_HOME/bin"  | sudo tee -a /root/.bashrc
+    echo "export GLASSFISH_HOME=/opt/glassfish4" | sudo tee -a /root/.bashrc
+    sudo echo "export PATH=$PATH:$GLASSFISH_HOME/bin"  | sudo tee -a /root/.bashrc
+   sudo su
+   asadmin start-domain
+   cd /vagrant
+   sudo apt-get -y install debconf-utils
+   sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password password root'
+   sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password root'
+   sudo apt-get -y install mysql-server
+SCRIPT
 Vagrant.configure("2") do |config|
 
   config.vm.define "dashboard" do  |dashboard| 
@@ -115,29 +135,7 @@ config.vm.define "glvsmysql1"  do |glvsmysql1|
 
 
   glvsmysql1.vm.network "private_network", ip: "192.168.50.10"  
-  glvsmysql1.vm.provision "shell", inline: <<-SHELL
-    sudo apt-get update
-
-    echo "192.168.50.6    openam.example.com" | sudo tee -a /etc/hosts
-    export JAVA_HOME=/vagrant/jdk1.8.0_121
-
-
-    sudo cp -r /vagrant/glassfish4 /opt/
-    export PATH=$PATH:$JAVA_HOME/bin
-    export GLASSFISH_HOME=/opt/glassfish4
-    export PATH=$PATH:$GLASSFISH_HOME/bin
-    echo "export JAVA_HOME=/vagrant/jdk1.8.0_121" | sudo tee -a /root/.bashrc
-    sudo echo "export PATH=$PATH:$JAVA_HOME/bin"  | sudo tee -a /root/.bashrc
-    echo "export GLASSFISH_HOME=/opt/glassfish4" | sudo tee -a /root/.bashrc
-    sudo echo "export PATH=$PATH:$GLASSFISH_HOME/bin"  | sudo tee -a /root/.bashrc
-   sudo su
-   asadmin start-domain
-   cd /vagrant
-   sudo apt-get -y install debconf-utils
-   sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password password root'
-   sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password root'
-   sudo apt-get -y install mysql-server
-  SHELL
+  glvsmysql1.vm.provision "shell", inline: $mysql_glassfish_script
 end
 
 
@@ -146,55 +144,13 @@ config.vm.define "glvsmysql2"  do |glvsmysql2|
   
 
   glvsmysql2.vm.network "private_network", ip: "192.168.50.11"  
-  glvsmysql2.vm.provision "shell", inline: <<-SHELL
-    sudo apt-get update
-
-    echo "192.168.50.6    openam.example.com" | sudo tee -a /etc/hosts
-    export JAVA_HOME=/vagrant/jdk1.8.0_121
-    export PATH=$PATH:$JAVA_HOME/bin
-
-
-    sudo cp -r /vagrant/glassfish4 /opt/
-    export GLASSFISH_HOME=/opt/glassfish4
-    export PATH=$PATH:$GLASSFISH_HOME/bin
-    echo "export JAVA_HOME=/vagrant/jdk1.8.0_121" | sudo tee -a /root/.bashrc
-    sudo echo "export PATH=$PATH:$JAVA_HOME/bin"  | sudo tee -a /root/.bashrc
-    echo "export GLASSFISH_HOME=/opt/glassfish4" | sudo tee -a /root/.bashrc
-    sudo echo "export PATH=$PATH:$GLASSFISH_HOME/bin"  | sudo tee -a /root/.bashrc
-   sudo su
-   asadmin start-domain
-   cd /vagrant
-   sudo apt-get -y install debconf-utils
-   sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password password root'
-   sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password root'
-   sudo apt-get -y install mysql-server
-  SHELL
+  glvsmysql2.vm.provision "shell", inline: $mysql_glassfish_script
 end
 
 config.vm.define "glvsmysql3"  do |glvsmysql3|
   glvsmysql3.vm.box = "bento/ubuntu-16.04"
  glvsmysql3.vm.network "private_network", ip: "192.168.50.12"  
- glvsmysql3.vm.provision "shell", inline: <<-SHELL
-    sudo apt-get update
-    export JAVA_HOME=/vagrant/jdk1.8.0_121
-
-    echo "192.168.50.6    openam.example.com" | sudo tee -a /etc/hosts
-    sudo cp -r /vagrant/glassfish4 /opt/
-    export PATH=$PATH:$JAVA_HOME/bin
-    export GLASSFISH_HOME=/opt/glassfish4
-    export PATH=$PATH:$GLASSFISH_HOME/bin
-    echo "export JAVA_HOME=/vagrant/jdk1.8.0_121" | sudo tee -a /root/.bashrc
-    sudo echo "export PATH=$PATH:$JAVA_HOME/bin"  | sudo tee -a /root/.bashrc
-    echo "export GLASSFISH_HOME=/opt/glassfish4" | sudo tee -a /root/.bashrc
-    sudo echo "export PATH=$PATH:$GLASSFISH_HOME/bin"  | sudo tee -a /root/.bashrc
-   sudo su
-   asadmin start-domain
-   cd /vagrant
-   sudo apt-get -y install debconf-utils
-   sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password password root'
-   sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password root'
-   sudo apt-get -y install mysql-server
-  SHELL
+ glvsmysql3.vm.provision "shell", inline: $mysql_glassfish_script
 end
 
 
