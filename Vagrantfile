@@ -99,7 +99,8 @@ end
     mkdir /var/lib/tomcat7/webapps/openam
     cp /vagrant/openam.war /var/lib/tomcat7/webapps/openam
 
-
+    sudo mkdir /openam
+    sudo chmod -R a+w /openam
     sudo chown -R tomcat7:tomcat7 /var/lib/tomcat7/webapps/openam/
     sudo chown -R tomcat7:tomcat7 /usr/share/tomcat7
     sudo chmod g+w -R /var/lib/tomcat7/webapps/openam
@@ -111,6 +112,10 @@ end
    sudo cp catalina.sh  /usr/share/tomcat7/bin/
    sudo cp /vagrant/tomcat7  /etc/default/
    sudo /etc/init.d/tomcat7 restart
+   rm /var/lib/tomcat7/webapps/openam/openam.war
+   cd /vagrant
+   echo y | sudo java -jar openam-configurator-tool-13.0.0.jar -f sampleconfiguration
+   
   SHELL
 end
 
